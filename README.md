@@ -1,7 +1,8 @@
-# WaveletFusionNet
+## WaveletFusionNet
 A PyTorch-based neural network for multi-source image fusion using wavelet transforms.
 
-# Directory Structure
+## Directory Structure
+```text
 WaveletFusionNet-main/
 ├── data/                       # 数据集文件夹 / Datasets
 │   ├── LSUI/                   # LSUI 数据集 / LSUI dataset
