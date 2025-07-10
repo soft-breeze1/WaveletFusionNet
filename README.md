@@ -54,3 +54,15 @@ WaveletFusionNet-main/
 - "torchvision 0.17.1"
 - "torchaudio 2.2.1"
 - "All dependencies specified in `requirements.txt`"
+
+```bash
+# Create and activate Conda environment
+conda create -n env_name python=3.8 -y
+conda activate env_name  # Windows
+# source activate env_name  # macOS/Linux
+
+# Install PyTorch components
+pip install torch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1
+
+# Install remaining dependencies
+pip install -r requirements.txt
