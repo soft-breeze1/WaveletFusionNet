@@ -46,3 +46,4 @@ WaveletFusionNet-main/
 ├── requirements.txt            # Python requirements
 ├── vgg16-397923af.pth          # VGG16 pretrained weights (for perceptual loss)
 
+## Environment Setup
