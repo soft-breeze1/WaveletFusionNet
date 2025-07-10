@@ -46,5 +46,11 @@ WaveletFusionNet-main/
 │
 ├── requirements.txt            # Python requirements
 ├── vgg16-397923af.pth          # VGG16 pretrained weights (for perceptual loss)
+```
 
-`## Environment Setup`
+## Environment Setup
+- "Python 3.8"
+- "PyTorch 2.2.1 (CUDA 12 supported)"
+- "torchvision 0.17.1"
+- "torchaudio 2.2.1"
+- "All dependencies specified in `requirements.txt`"
