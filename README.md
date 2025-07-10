@@ -30,7 +30,7 @@ WaveletFusionNet-main/
 ├── Net/                        # 网络结构定义 / Network architectures
 │   ├── __init__.py
 │   ├── HFAB.py                 # 高频注意力块 / High-frequency attention block
-│   ├── LFTU.py                 # 低频Transformer UNet / Low-frequency Transformer UNet
+│   ├── LFTU.py                 # 低频Transformer UNet / Low Frequency Transformer U-Net
 │   └── main.py                 # 网络主结构入口 / Main network definition
 │
 ├── results/                    # 结果保存（推理/可视化等）/ Results (inference/visualization etc.)
