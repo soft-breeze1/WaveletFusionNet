@@ -57,7 +57,7 @@ WaveletFusionNet-main/
 
 ```bash
 # Create environment
-conda create -n env_name python=3.8 -y
+conda create -n env_name python=3.8
 
 # Install PyTorch components
 pip install torch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1
