@@ -71,4 +71,12 @@ pip install -r requirements.txt
 The dataset is provided as a compressed file and can be downloaded from Baidu Netdisk:
 - **Download link:** [https://pan.baidu.com/s/1_UZCtZ-KmEMHXkh7GtMzhQ?pwd=0627)
 
+## Train
+```bash
+python Experiments/train.py
+```
 
+## Test
+```bash
+python Experiments/test.py
+```
