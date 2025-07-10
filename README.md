@@ -8,6 +8,7 @@ WaveletFusionNet-main/
 │   ├── LSUI/                   # LSUI 数据集 / LSUI dataset
 │   │   ├── test/               # 测试集 / test set
 │   │   └── train/              # 训练集 / train set
+|   |   └── Validation/         # 验证集 / validation set
 │   ├── U45/                    # U45 数据集（图片直接存放于此，无子目录）/ U45 dataset (images directly here)
 │   └── UIEB/                   # UIEB 数据集 / UIEB dataset
 │       ├── test/               # 测试集 / test set
