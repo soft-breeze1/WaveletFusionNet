@@ -60,7 +60,7 @@ WaveletFusionNet-main/
 conda create -n env_name python=3.8
 
 # Install PyTorch components
-pip install torch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1
+pip install torch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1 --index-url https://download.pytorch.org/whl/cu121
 
 # Install remaining dependencies
 pip install -r requirements.txt
