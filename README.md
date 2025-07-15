@@ -2,7 +2,7 @@
 &emsp;&emsp;WaveletFusionNet is a novel end-to-end underwater image enhancement network that integrates wavelet decomposition, a transformer-embedded U-Net, and multi-layer residual CBAM modules. First, the input image is decomposed into low- and high-frequency subbands using discrete wavelet transform. The low-frequency subband is processed with a transformer-enhanced U-Net to recover global structure and correct color, while the high-frequency subbands are refined with multi-layer residual CBAM modules to enhance detail and texture. The enhanced subbands are then fused via inverse wavelet transform to reconstruct the final output. Extensive experiments on UIEB and LSUI datasets show that WaveletFusionNet achieves superior results in terms of color correction, detail preservation, and computational efficiency, surpassing previous state-of-the-art approaches.
 
 # Time
-2025.5.11-2026.6.27🎉
+2025.5.11-2025.6.27🎉🎉🎉
 
 # Directory Structure
 
