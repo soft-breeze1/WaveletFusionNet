@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/home/label/bzhang/pyproject/Net-1')
+sys.path.append('/home/label/bzhang/pyproject/WaveletFusionNet-main/')
 
 import random
 import numpy as np
@@ -23,7 +23,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 def get_args():
     parser = argparse.ArgumentParser(description="WaveletFusionNet_train")
-    parser.add_argument("--batchSize", type=int, default=5)
+    parser.add_argument("--batchSize", type=int, default=16)
     parser.add_argument("--patchSize", type=int, default=256)
     parser.add_argument("--epochs", type=int, default=800)
     parser.add_argument("--lr", type=float, default=1e-4)
@@ -61,10 +61,10 @@ if __name__ == '__main__':
     torch.cuda.manual_seed_all(1234)
 
     train_dataset = get_training_data(opt.train_data, {'patch_size': opt.patchSize})
-    train_loader = DataLoader(train_dataset, batch_size=opt.batchSize, shuffle=True, num_workers=4, drop_last=False, pin_memory=True)
+    train_loader = DataLoader(train_dataset, batch_size=opt.batchSize, shuffle=True, num_workers=1, drop_last=False, pin_memory=True)
 
     val_dataset = get_validation_data(opt.val_data, {'patch_size': opt.patchSize})
-    val_loader = DataLoader(val_dataset, batch_size=opt.batchSize, shuffle=False, num_workers=4, drop_last=False, pin_memory=True)
+    val_loader = DataLoader(val_dataset, batch_size=opt.batchSize, shuffle=False, num_workers=1, drop_last=False, pin_memory=True)
 
     model = WaveletFusionNet()
     criterion = WaveletFusionLoss()
@@ -107,6 +107,7 @@ if __name__ == '__main__':
         with open(log_file, 'w', encoding='utf-8') as f:
             f.write("Epoch,Loss_total,Loss_img,Loss_ll,Loss_hf,Loss_vgg,Loss_ssim,Loss_color,Loss_edge,PSNR,Best_PSNR,SSIM,Best_SSIM,UIQM,Best_UIQM,UCIQE,Best_UCIQE\n")
 
+    # ====================== 训练和验证循环 ==========================
     for epoch in range(initial_epoch, opt.epochs):
         if not switched and epoch >= fine_tune_start:
             print_and_log(log_file, f"\n[Fine-tuning] Set LR to {fine_tune_lr} from epoch {epoch+1}")
@@ -117,7 +118,6 @@ if __name__ == '__main__':
         model.train()
         epoch_loss = 0
         loss_items = {k: 0 for k in ['total', 'img', 'll', 'hf', 'vgg', 'ssim', 'color', 'edge']}
-
         train_bar = tqdm(train_loader, desc=f'Training Epoch {epoch + 1}', leave=True)
         for i, (target, input_, _) in enumerate(train_bar):
             optimizer.zero_grad()
@@ -128,12 +128,10 @@ if __name__ == '__main__':
             loss, loss_dict = criterion(output, target)
             loss.backward()
             optimizer.step()
-
             epoch_loss += loss.item()
             for key in loss_items:
                 if f'loss_{key}' in loss_dict:
                     loss_items[key] += loss_dict[f'loss_{key}']
-
             train_bar.set_postfix({
                 'loss': f'{epoch_loss / (i + 1):.4f}',
                 'img': f'{loss_items["img"] / (i + 1):.4f}',
@@ -144,14 +142,13 @@ if __name__ == '__main__':
 
         scheduler.step()
 
-        # 验证阶段
+        # ----------------- 验证阶段 ------------------
         model.eval()
         psnr_val_rgb = 0
         ssim_val_rgb = 0
         uiqm_val = 0
         uciqe_val = 0
         num_val_batches = len(val_loader)
-
         val_bar = tqdm(val_loader, desc=f'Validating Epoch {epoch + 1}', leave=False)
         for ii, (target, input_, _) in enumerate(val_bar):
             if opt.use_GPU:
@@ -164,7 +161,6 @@ if __name__ == '__main__':
             uiqm_batch, uciqe_batch = get_UIQM_UCIQE(restored)
             uiqm_val += uiqm_batch
             uciqe_val += uciqe_batch
-
             val_bar.set_postfix({
                 'PSNR': f'{psnr_val_rgb / (ii + 1):.2f}',
                 'SSIM': f'{ssim_val_rgb / (ii + 1):.4f}',
@@ -180,6 +176,11 @@ if __name__ == '__main__':
         is_best = epoch_psnr > best_psnr
         if is_best:
             best_psnr = epoch_psnr
+            # 保存当前最优 PSNR 的模型
+            best_model_path = os.path.join(save_dir, 'net_best_psnr.pth')
+            torch.save(model.state_dict(), best_model_path)
+            print_and_log(log_file, f">>>> Saved best PSNR model at epoch {epoch+1}, PSNR={epoch_psnr:.2f}")
+
         best_ssim = max(best_ssim, epoch_ssim)
         best_uiqm = max(best_uiqm, epoch_uiqm)
         best_uciqe = max(best_uciqe, epoch_uciqe)
@@ -205,13 +206,7 @@ if __name__ == '__main__':
         with open(log_file, 'a+', encoding='utf-8') as f:
             f.write(log_line + "\n")
 
-        # 仅每100个epoch保存一次最佳模型
-        if is_best and (epoch + 1) % 100 == 0:
-            best_model_path = os.path.join(save_dir, f'net_best_psnr_epoch{epoch+1}.pth')
-            torch.save(model.state_dict(), best_model_path)
-            print_and_log(log_file, f">>>> Saved best PSNR model at epoch {epoch+1}, PSNR={epoch_psnr:.2f}")
-
-        # 保存断点模型
+        # 保存断点模型（每个epoch都保存，方便断点续训）
         checkpoint = {
             'model': model.state_dict(),
             'optimizer': optimizer.state_dict(),
@@ -219,3 +214,4 @@ if __name__ == '__main__':
             'epoch': epoch + 1
         }
         torch.save(checkpoint, os.path.join(save_dir, 'net_checkpoint.pth'))
+
