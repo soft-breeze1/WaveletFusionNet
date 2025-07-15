@@ -67,16 +67,20 @@ pip install -r requirements.txt
 ```
 
 # Data Preparation
-
 The dataset is provided as a compressed file and can be downloaded from Baidu Netdisk:
 - **Download link:** [https://pan.baidu.com/s/1_UZCtZ-KmEMHXkh7GtMzhQ?pwd=0627)
 
-## Train
+# Pre-trained model
+File shared via network disk: models.zip
+Link: https://pan.baidu.com/s/1RqHZ4rk2jzqRDkpKmkIYpQ?pwd=a2bf
+Extraction code: a2bf
+
+# Train
 ```bash
 python Experiments/train.py
 ```
 
-## Test
+# Test
 ```bash
 python Experiments/test.py
 ```
